@@ -14,8 +14,8 @@ env:
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default
-  EXTERNAL_FILE: configs/External_Lite.config
-  CONFIG_FILE: configs/x86_64Lite.config
+  EXTERNAL_FILE: configs/LuciApp_Lite.config
+  CONFIG_FILE: configs/x86_64.config
   SYS_CONF_SH: configure.sh
   PACKS: package.sh
   UPLOAD_BIN_DIR: false
@@ -53,7 +53,7 @@ jobs:
         haskell: true
         large-packages: true
         swap-storage: true
-    
+
     - name: Clone source code
       working-directory: /workdir
       run: |
@@ -67,7 +67,7 @@ jobs:
           ccache: 'true'
           mixkey: 'x86'
           prefix: 'openwrt'
-        
+
     - name: Load custom feeds
       run: |
         [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
@@ -135,7 +135,7 @@ jobs:
 
     - name: Organize files
       id: organize
-      if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
+      if: steps.compile.outputs.status == 'success' && env.UPLOAD_FIRMWARE == 'true' && !cancelled()
       run: |
         cd openwrt/bin/targets/*/*
         rm -rf packages
@@ -157,6 +157,11 @@ jobs:
         echo "release_tag=$(date +"%Y.%m.%d-%H%M%S")" >> $GITHUB_OUTPUT
         touch release.txt
         echo "status=success" >> $GITHUB_OUTPUT
+
+    - name: Generate release body
+      if: steps.compile.outputs.status == 'success' && !cancelled()
+      run: |
+        echo "![](https://img.shields.io/github/downloads/${{ github.repository }}/${{ steps.tag.outputs.release_tag }}/total?style=flat-square)" >> release.txt
 
     - name: Upload firmware to release
       uses: softprops/action-gh-release@v1

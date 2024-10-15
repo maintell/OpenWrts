@@ -1,4 +1,4 @@
-name: Raspberry Pi4
+name: Raspberry Pi5
 
 on:
   repository_dispatch:
@@ -10,12 +10,12 @@ on:
         default: 'false'
 
 env:
-  OPNAME: 'Raspberry Pi4'
+  OPNAME: 'Raspberry Pi5'
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default
   EXTERNAL_FILE: configs/LuciApp.config
-  CONFIG_FILE: configs/RPi4.config
+  CONFIG_FILE: configs/RPi5.config
   SYS_CONF_SH: configure.sh
   PACKS: package.sh
   UPLOAD_BIN_DIR: false
@@ -65,7 +65,7 @@ jobs:
       uses: klever1988/cachewrtbuild@main
       with:
           ccache: 'true'
-          mixkey: 'rpi4'
+          mixkey: 'rpi5'
           prefix: 'openwrt'
 
     - name: Load custom feeds
