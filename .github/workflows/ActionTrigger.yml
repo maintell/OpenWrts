@@ -1,4 +1,4 @@
-name: Update Checker
+name: ActionTrigger
 
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
@@ -8,7 +8,7 @@ env:
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 16 */5 * *'
+    - cron: '0 16 */7 * *'
 
 jobs:
   check:
@@ -18,7 +18,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
       
-    - name: AutoTrigger-ActionBot
+    - name: AutoTrigger
       uses: bigbugcc/ActionBot@main
 
     - name: Delete workflow runs
@@ -30,7 +30,7 @@ jobs:
       uses: dev-drprasad/delete-older-releases@v0.2.0
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       with:
-        keep_latest: 6
+        keep_latest: 18
         delete_tags: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
